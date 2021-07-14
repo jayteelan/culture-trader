@@ -36,3 +36,11 @@ class Project(models.Model):
 
 
 class Generation(models.Model):
+    created_at = models.DateTimeField('date created')
+    project_id = models.ForeignKey(Project, on_delete=CASCADE)
+    f_number = models.IntegerField
+    parent1 = models.ForeignKey(
+        Strain, related_name='first_parent_strain', on_delete=models.CASCADE)
+    parent2 = models.ForeignKey(
+        Strain, related_name='second_parent_strain', on_delete=CASCADE)
+    # children = [...]
