@@ -11,8 +11,10 @@ class Strain(models.Model):
     name = models.CharField(max_length=200)
     stable = models.BooleanField
     public = models.BooleanField
-    parent1 = models.ForeignKey('self', on_delete=models.CASCADE)
-    parent2 = models.ForeignKey('self', on_delete=models.CASCADE)
+    parent1 = models.ForeignKey(
+        'self', related_name='first_parent_strain', on_delete=models.CASCADE)
+    parent2 = models.ForeignKey(
+        'self', related_name='second_parent_strain', on_delete=models.CASCADE)
     tags = TaggableManager()
     notes = models.TextField
 
