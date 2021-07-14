@@ -20,3 +20,19 @@ class Strain(models.Model):
 
     def __str__(self):
         return self.genus + self.species + self.name
+
+
+class Project(models.Model):
+    created_at = models.DateTimeField('date created')
+    name = models.CharField(max_length=200)
+    root1 = models.ForeignKey(
+        Strain, related_name='first_root_strain', on_delete=models.CASCADE)
+    root2 = models.ForeignKey(
+        Strain, related_name='second_root_strain', on_delete=models.CASCADE)
+    # generations = models.ForeignKey(Generation, on_delete=CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
+class Generation(models.Model):

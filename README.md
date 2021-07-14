@@ -4,5 +4,5 @@ Culture Trader (working title) is an app build on a Postgres/Django backend to h
 
 ## Dependencies
 
-**Psycopg2**: allows Django to communicate with the PostgreSQL database
-**django-taggit**: manages tags used to mark a strain's notable phenotypes
+- **Psycopg2**: allows Django to communicate with the PostgreSQL database
+- **django-taggit**: manages tags used to mark a strain's notable phenotypes
