@@ -5,7 +5,7 @@ from taggit.managers import TaggableManager
 
 
 class Strain(models.Model):
-    created_at = models.DateTimeField('date created')
+    created_at = models.DateTimeField('date created', auto_now_add=True)
     parent1 = models.ForeignKey(
         'self',
         related_name='first_parent_strain',
@@ -22,7 +22,7 @@ class Strain(models.Model):
     )
     genus = models.CharField(max_length=200)
     species = models.CharField(max_length=200)
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, blank=True)
     tags = TaggableManager(blank=True)
     notes = models.TextField(blank=True)
     public = models.BooleanField(default=False)
