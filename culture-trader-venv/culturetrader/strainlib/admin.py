@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Strain, Project, Generation
+
+admin.site.register([Strain, Project, Generation])
