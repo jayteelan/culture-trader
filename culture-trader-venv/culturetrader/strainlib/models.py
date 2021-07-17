@@ -25,32 +25,61 @@ class Strain(models.Model):
     name = models.CharField(max_length=200, blank=True)
     tags = TaggableManager(blank=True)
     notes = models.TextField(blank=True)
+    # in_generations = models.ManyToManyField('Generation', blank=True)
+    # generations = models.ManyToManyField('Generation')
     public = models.BooleanField(default=False)
     stable = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.genus + " "+self.species + " \"" + self.name+"\""
+        return '{} {} "{}"'.format(self.genus, self.species, self.name)
 
 
 class Project(models.Model):
-    created_at = models.DateTimeField('date created')
-    name = models.CharField(max_length=200)
+    created_at = models.DateTimeField('date created', auto_now_add=True)
+    name = models.CharField(max_length=200, default="New breeding project")
     root1 = models.ForeignKey(
         Strain, related_name='first_root_strain', on_delete=models.CASCADE)
     root2 = models.ForeignKey(
-        Strain, related_name='second_root_strain', on_delete=models.CASCADE)
-    # generations = models.ForeignKey(Generation, on_delete=CASCADE)
+        Strain,
+        related_name='second_root_strain',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return self.name
 
 
 class Generation(models.Model):
-    created_at = models.DateTimeField('date created')
-    project_id = models.ForeignKey(Project, on_delete=models.CASCADE)
-    f_number = models.IntegerField
-    # parent1 = models.ForeignKey(
-    #     Strain, related_name='first_parent_strain', on_delete=models.CASCADE)
-    # parent2 = models.ForeignKey(
-    #     Strain, related_name='second_parent_strain', on_delete=models.CASCADE)
-    # children = [...]
+    created_at = models.DateTimeField('date created', auto_now_add=True)
+    project = models.ForeignKey(
+        Project, related_name="generations", on_delete=models.CASCADE)
+    children = models.ManyToManyField(Strain, blank=True)
+
+    def increment_f_number():
+        "Returns the F-number of the generation"
+        return Project.generations.count()
+        # return 5
+
+    f_number = models.IntegerField(default=increment_f_number, editable=False)
+    # project_generations = Generation.objects.filter(
+    #     project_id=self.project.id)
+    # return project_generations.length+1
+
+#     def children(self):
+#         "Returns all children in the current generation"
+#         project_all = Strain.objects.filter(
+#             self.project_id in Strain.in_projects)
+#         return project_all.filter
+
+#     # return generations.length+1
+#     # f_number = models.IntegerField(default=get_f)
+#     # def get_children:
+#     # get all generations by project_id
+#     # get previous generation (f_number===generations.length)
+#     # # return all strains with same project_id and f_number
+#     # children = models.ManyToManyField(Strain)
+
+#     def __str__(self):
+#         return "{} gen{}".format(self.project_id, self.f_number)
