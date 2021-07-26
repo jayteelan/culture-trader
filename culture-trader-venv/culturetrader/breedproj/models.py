@@ -1,3 +1,6 @@
+from django.db.models.signals import post_save, post_delete
+from django.db.models import F
+from django.dispatch import receiver
 import datetime
 from django.db import models
 from django.utils import timezone
@@ -19,6 +22,7 @@ class Project(models.Model):
         blank=True,
         null=True
     )
+    latest_generation = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -27,32 +31,42 @@ class Project(models.Model):
 class Generation(models.Model):
     created_at = models.DateTimeField('date created', auto_now_add=True)
     project = models.ForeignKey(
-        Project, related_name="generations", on_delete=models.CASCADE)
+        Project,
+        related_name="generations",
+        on_delete=models.CASCADE
+    )
     children = models.ManyToManyField(Strain, blank=True)
+    f_number = models.IntegerField(
+        default=1, editable=False)
 
-    # def increment_f_number():
-    #     "Returns the F-number of the generation"
-    #     test = Project.objects.all().count()
-    #     return test
-    # return 5
+    def __str__(self):
+        return "project{} gen{}".format(self.project_id, self.f_number)
 
-    # f_number = models.IntegerField(default=1, editable=True)
-    # project_generations = Generation.objects.filter(
-    #     project_id=self.project.id)
-    # return project_generations.length+1
+# Signals, with help from dani herrera [https://stackoverflow.com/questions/68424408/getting-all-records-with-same-foreign-key-in-django]
 
-#     def children(self):
-#         "Returns all children in the current generation"
-#         project_all = Strain.objects.filter(
-#             self.project_id in Strain.in_projects)
-#         return project_all.filter
 
-#     # return generations.length+1
-#     # f_number = models.IntegerField(default=get_f)
-#     # def get_children:
-#     # get all generations by project_id
-#     # get previous generation (f_number===generations.length)
-#     # # return all strains with same project_id and f_number
+@receiver(post_save, sender=Generation)
+def add_project(sender, instance, created, **kwargs):
+    if not created:
+        return
+    current_proj = instance.project
+    current_proj.latest_generation = F('latest_generation') + 1
+    current_proj.save()
+    current_proj.refresh_from_db()
 
-#     def __str__(self):
-#         return "{} gen{}".format(self.project_id, self.f_number)
+
+@receiver(post_save, sender=Generation)
+def add_gen(sender, instance, created, **kwargs):
+    if not created:
+        return
+    current_gen = instance.project.latest_generation
+    instance.f_number = current_gen
+    instance.save()
+    instance.refresh_from_db()
+
+# @receiver(post_delete, sender=Generation)
+# def rm_project(sender, instance, **kwargs):
+#     current_proj = instance.project
+#     current_proj.f_number = F('f_number') - 1
+#     current_proj.save()
+#     current_proj.refresh_from_db()
