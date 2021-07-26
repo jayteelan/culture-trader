@@ -38,7 +38,10 @@ class Project(models.Model):
     created_at = models.DateTimeField('date created', auto_now_add=True)
     name = models.CharField(max_length=200, default="New breeding project")
     root1 = models.ForeignKey(
-        Strain, related_name='first_root_strain', on_delete=models.CASCADE)
+        Strain,
+        related_name='first_root_strain',
+        on_delete=models.CASCADE
+    )
     root2 = models.ForeignKey(
         Strain,
         related_name='second_root_strain',
@@ -57,12 +60,13 @@ class Generation(models.Model):
         Project, related_name="generations", on_delete=models.CASCADE)
     children = models.ManyToManyField(Strain, blank=True)
 
-    def increment_f_number():
-        "Returns the F-number of the generation"
-        return Project.generations.count()
-        # return 5
+    # def increment_f_number():
+    #     "Returns the F-number of the generation"
+    #     test = Project.objects.all().count()
+    #     return test
+    # return 5
 
-    f_number = models.IntegerField(default=increment_f_number, editable=False)
+    # f_number = models.IntegerField(default=1, editable=True)
     # project_generations = Generation.objects.filter(
     #     project_id=self.project.id)
     # return project_generations.length+1
@@ -79,7 +83,6 @@ class Generation(models.Model):
 #     # get all generations by project_id
 #     # get previous generation (f_number===generations.length)
 #     # # return all strains with same project_id and f_number
-#     # children = models.ManyToManyField(Strain)
 
 #     def __str__(self):
 #         return "{} gen{}".format(self.project_id, self.f_number)
