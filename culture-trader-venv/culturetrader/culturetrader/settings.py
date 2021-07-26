@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'taggit',
     'strainlib.apps.StrainlibConfig',
+    'breedproj.apps.BreedprojConfig',
 ]
 
 MIDDLEWARE = [

@@ -34,31 +34,31 @@ class Strain(models.Model):
         return '{} {} "{}"'.format(self.genus, self.species, self.name)
 
 
-class Project(models.Model):
-    created_at = models.DateTimeField('date created', auto_now_add=True)
-    name = models.CharField(max_length=200, default="New breeding project")
-    root1 = models.ForeignKey(
-        Strain,
-        related_name='first_root_strain',
-        on_delete=models.CASCADE
-    )
-    root2 = models.ForeignKey(
-        Strain,
-        related_name='second_root_strain',
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True
-    )
+# class Project(models.Model):
+#     created_at = models.DateTimeField('date created', auto_now_add=True)
+#     name = models.CharField(max_length=200, default="New breeding project")
+#     root1 = models.ForeignKey(
+#         Strain,
+#         related_name='first_root_strain',
+#         on_delete=models.CASCADE
+#     )
+#     root2 = models.ForeignKey(
+#         Strain,
+#         related_name='second_root_strain',
+#         on_delete=models.CASCADE,
+#         blank=True,
+#         null=True
+#     )
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
 
 
-class Generation(models.Model):
-    created_at = models.DateTimeField('date created', auto_now_add=True)
-    project = models.ForeignKey(
-        Project, related_name="generations", on_delete=models.CASCADE)
-    children = models.ManyToManyField(Strain, blank=True)
+# class Generation(models.Model):
+#     created_at = models.DateTimeField('date created', auto_now_add=True)
+#     project = models.ForeignKey(
+#         Project, related_name="generations", on_delete=models.CASCADE)
+#     children = models.ManyToManyField(Strain, blank=True)
 
     # def increment_f_number():
     #     "Returns the F-number of the generation"
