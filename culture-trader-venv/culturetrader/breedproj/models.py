@@ -64,9 +64,18 @@ def add_gen(sender, instance, created, **kwargs):
     instance.save()
     instance.refresh_from_db()
 
-# @receiver(post_delete, sender=Generation)
-# def rm_project(sender, instance, **kwargs):
-#     current_proj = instance.project
-#     current_proj.f_number = F('f_number') - 1
-#     current_proj.save()
-#     current_proj.refresh_from_db()
+
+@receiver(post_delete, sender=Generation)
+def rm_project(sender, instance, **kwargs):
+    current_proj = instance.project
+    current_proj.latest_generation = F('latest_generation') - 1
+    current_proj.save()
+    current_proj.refresh_from_db()
+
+
+@receiver(post_delete, sender=Generation)
+def rm_gen(sender, instance, **kwargs):
+    current_gen = instance.project.latest_generation
+    instance.f_number = current_gen
+    instance.save()
+    instance.refresh_from_db()
